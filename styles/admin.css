@@ -1,0 +1,51 @@
+.admin-wrapper {
+  margin-top: 2rem;
+}
+.admin-wrapper h2 {
+  text-align: center;
+}
+.add-form {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+  background: bisque;
+  width: 50%;
+  margin: 0 auto;
+  margin-top: 2rem;
+  padding: 2rem;
+  border-radius: 5px;
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.15);
+}
+.add-form form {
+  width: 100%;
+}
+.add-form form .form-group {
+  margin-bottom: 20px;
+  width: 100%;
+}
+.add-form form .form-group input,
+textarea,
+button {
+  width: 100%;
+}
+.add-form form .form-group input,
+textarea {
+  border: 1.5px solid blue;
+  outline: none;
+  padding: 10px;
+  border-radius: 5px;
+}
+.add-form form .form-group input,
+textarea::placeholder {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+.add-form form .form-group button {
+  padding: 0.75rem 1rem;
+  background: red;
+  border: none;
+  border-radius: 5px;
+  color: #fff;
+  text-transform: uppercase;
+  font-weight: bold;
+  cursor: pointer;
+}

@@ -1,0 +1,192 @@
+.btn-1 {
+  border: none;
+  background: red;
+  padding: 1rem 3rem;
+  border-radius: 5px;
+  cursor: pointer;
+  color: #fff;
+  font-size: 18px;
+  margin-top: 10px;
+  display: block;
+  text-decoration: none;
+}
+
+.header {
+  padding: 1.5rem;
+  background: #333;
+  position: sticky;
+  top: 0;
+  z-index: 99999999;
+}
+
+.header-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.header-wrapper .logo {
+  color: #fff;
+}
+.header-wrapper .logo img {
+  width: 175px;
+}
+.header-wrapper .navbar {
+  display: flex;
+}
+.header-wrapper .navbar .navbar-list {
+  display: flex;
+}
+.header-wrapper .navbar .navbar-list li {
+  list-style: none;
+  margin-right: 1rem;
+}
+.header-wrapper .navbar .navbar-list li a {
+  text-decoration: none;
+  color: #fff;
+}
+
+.showcase {
+  background-image: url("../assets/images/showcase.jpg");
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 70vh;
+  position: relative;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+.showcase::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+}
+.showcase .showcase-wrapper {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+}
+.showcase .showcase-wrapper h2 {
+  font-size: 4rem;
+  color: #fff;
+}
+.showcase * {
+  z-index: 99;
+}
+
+.hotelsList {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+  min-height: 700px;
+}
+.hotelsList-wrapper {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+.hotelsList-wrapper h2 {
+  font-size: 3rem;
+  text-align: center;
+}
+
+.hotelCards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-gap: 1rem;
+  margin-top: 2rem;
+}
+
+.card {
+  background: #f4f4f4;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+.card-body {
+  padding: 1.5rem;
+}
+.card-body h4 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+.card-header {
+  width: 100%;
+  height: 215px;
+}
+.card-header img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.card-footer {
+  padding: 10px 1.5rem;
+  display: flex;
+  /* justify-content: center; */
+}
+.card-footer a {
+  display: block;
+  background: red;
+  padding: 10px 1.2rem;
+  border-radius: 5px;
+  text-decoration: none;
+  color: #fff;
+}
+.footer {
+  background: #333;
+}
+.footer-wrapper {
+  display: flex;
+  justify-content: center;
+  padding: 3rem;
+  flex-direction: column;
+  align-items: center;
+  color: #fff;
+}
+.footer-wrapper .socialIcons a {
+  text-decoration: none;
+  color: #fff;
+  margin-left: 20px;
+}
+
+.modal-footer {
+  flex-direction: column !important;
+  justify-content: center;
+}
+.signUp {
+  display: flex;
+}
+.signUp > p {
+  margin-left: 10px;
+}
+#openSigninModal {
+  cursor: pointer;
+  color: blue;
+}
+
+@media (max-width: 767px) {
+  .header {
+    padding: 1rem;
+  }
+  .header-wrapper {
+    flex-direction: column;
+  }
+  .container {
+    width: calc(100% - 2%);
+  }
+  .hotelCards {
+    grid-template-columns: repeat(1, 1fr);
+  }
+  .showcase .showcase-wrapper h2 {
+    font-size: 3rem;
+  }
+  .hotelsList-wrapper h2 {
+    font-size: 2rem;
+  }
+}

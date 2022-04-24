@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css"
+      integrity="sha512-10/jx2EXwxxWqCLX/hHth/vu2KY3jCF70dCQB8TSgNjbCVAC/8vai53GfMDrO2Emgwccf2pJqxct9ehpzG+MTw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link rel="stylesheet" href="./styles/common.css" />
+    <link rel="stylesheet" href="./styles/admin.css" />
+    <title>Admin Panel</title>
+  </head>
+  <body>
+    <div class="admin-section">
+      <div class="container">
+        <div class="admin-wrapper">
+          <h2>Add your hotel</h2>
+          <div class="add-form">
+            <form>
+              <div class="form-group">
+                <input
+                  type="text"
+                  name="name"
+                  id="name"
+                  placeholder="Your hotel name"
+                />
+              </div>
+              <div class="form-group">
+                <textarea
+                  name="description"
+                  id="description"
+                  cols="30"
+                  rows="5"
+                  placeholder="Description"
+                ></textarea>
+              </div>
+              <div class="form-group">
+                <input
+                  type="number"
+                  name="vacancy"
+                  id="vacancy"
+                  placeholder="Available count"
+                />
+              </div>
+              <div class="form-group">
+                <input
+                  type="text"
+                  name="location"
+                  id="location"
+                  placeholder="Hotel Location"
+                />
+              </div>
+              <div class="form-group">
+                <input
+                  type="text"
+                  name="map"
+                  id="map"
+                  placeholder="Google Map link"
+                />
+              </div>
+              <div class="form-group">
+                <input
+                  type="number"
+                  name="price"
+                  id="roomPrice"
+                  placeholder="Price"
+                />
+              </div>
+              <div class="form-group">
+                <input type="file" name="images" id="images" />
+                <img
+                  src=""
+                  id="hotelImgPreview"
+                  style="width: 200px; margin-top: 10px"
+                />
+              </div>
+              <div class="form-group">
+                <button type="button" id="add">Add Hotel</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <div class="text-center mt-5">
+          <button class="btn btn-primary w-25">
+            <a href="./editHotelDetails.html" class="text-white"
+              >Manage Hotel Details</a
+            >
+          </button>
+        </div>
+      </div>
+    </div>
+  </body>
+
+  <script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.11/firebase-app.js";
+
+    const firebaseConfig = {
+    apiKey: "AIzaSyDQB8H6NEP5DtZONU4eOUp16CLxVGtk2s4",
+    authDomain: "resorts-261f6.firebaseapp.com",
+    projectId: "resorts-261f6",
+    databaseURL: "https://resorts-261f6-default-rtdb.firebaseio.com",
+    storageBucket: "resorts-261f6.appspot.com",
+    messagingSenderId: "630842294118",
+    appId: "1:630842294118:web:ed90a4a50d5d64bbef52a7"
+  };
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+
+    import {
+      getStorage,
+      ref as sRef,
+      uploadBytes,
+      uploadBytesResumable,
+      getDownloadURL,
+    } from "https://www.gstatic.com/firebasejs/9.6.11/firebase-storage.js";
+
+    let files = [];
+    let reader = new FileReader();
+    const hotelImg = document.getElementById("images");
+    const hotelImgPreview = document.getElementById("hotelImgPreview");
+
+    const hotelName = document.getElementById("name");
+    const description = document.getElementById("description");
+    const hotelLocation = document.getElementById("location");
+    const vacancy = document.getElementById("vacancy");
+    const addData = document.getElementById("add");
+    const roomPrice = document.getElementById("roomPrice");
+    const map = document.getElementById("map");
+
+    let imgURL;
+
+    let dataObj;
+
+    hotelImg.onchange = (e) => {
+      files = e.target.files;
+
+      // let extention = GetFileExt(files[0]);
+      // let fileName = GetFileName(files[0]);
+
+      reader.readAsDataURL(files[0]);
+    };
+
+    reader.onload = () => {
+      hotelImgPreview.src = reader.result;
+      console.log(files[0]);
+    };
+    let progress;
+
+    function uploadProgress() {
+      const storage = getStorage();
+      const imgToUpload = files[0];
+
+      const storageRef = sRef(storage, "hotelImages/" + imgToUpload.name);
+
+      const uploadTask = uploadBytesResumable(storageRef, imgToUpload);
+
+      uploadTask.on("state_changed", (snapshot) => {
+        progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        console.log("Upload is " + progress + "% done");
+        if (progress >= 100) {
+          setTimeout(() => {
+            getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+              console.log("File available at", downloadURL);
+              imgURL = downloadURL;
+
+              dataObj = {
+                id: 1,
+                hotelName: hotelName.value,
+                description: description.value,
+                location: hotelLocation.value,
+                vacancy: vacancy.value,
+                roomPrice: roomPrice.value,
+                map: map.value,
+                imgURL: imgURL,
+              };
+
+              addHotel(dataObj);
+            });
+          }, 2000);
+        }
+      });
+    }
+
+    addData.addEventListener("click", () => {
+      uploadProgress();
+    });
+
+    const addHotel = async (dataItems) => {
+      try {
+        const response = await fetch(
+          "https://resorts-261f6-default-rtdb.firebaseio.com/details.json",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(dataItems),
+          }
+        );
+        const data = await response.json();
+        alert("HOTEL HAS BEEN ADDED SUCCESSFULLY!");
+      } catch (error) {
+        console.log(error);
+      }
+    };
+  </script>
+
+  <!-- <script src="./scripts/admin.js"></script> -->
+</html>
