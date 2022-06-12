@@ -33,20 +33,21 @@
           <nav class="navbar">
             <ul class="navbar-list">
               <li><a href="/">Home</a></li>
-              <li id="adLink"><a href="/admin.html" id="adminLink">Admin Panel</a></li>
-              <li>
+              <li id="adLink" style="display: none"><a href="/admin.html" id="adminLink" >Admin Panel</a></li>
+              <li  id="loginModalLink" style="display: none">
                 <a
                   style="cursor: pointer"
-                  id="loginModalLink"
+                 
                   data-bs-toggle="modal"
                   data-bs-target="#loginModal"
                   >Login</a
                 >
               </li>
-              <li>
-                <a style="cursor: pointer" id="logoutButton">Logout</a>
+              <li id="logoutButton">
+                <a style="cursor: pointer" >Logout</a>
               </li>
               <li><a href="./exploreHotels.html">Explore</a></li>
+              <li id="mybookings"><a href="./myBookings.html">My Bookings</a></li>
             </ul>
             <div class="searchBar"></div>
             <div class="userProfile"></div>
@@ -77,8 +78,9 @@
       <div class="container">
         <footer class="footer-wrapper">
           <div class="socialIcons">
-            <a href="https://www.facebook.com/people/Ramyashree/100012176885073/"><i class="fa-brands fa-facebook"></i></a>
-            <a href="https://www.instagram.com/ramyashree_05/?igshid=YmMyMTA2M2Y="><i class="fa-brands fa-instagram"></i></a>
+            <a href="/"><i class="fa-brands fa-facebook"></i></a>
+            <a href="/"><i class="fa-brands fa-instagram"></i></a>
+            <a href="/"><i class="fa-brands fa-twitter"></i></a>
           </div>
           <p>&copy; All rights reserved subiksha</p>
         </footer>
@@ -177,6 +179,7 @@
 
       import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
       import { getAuth, createUserWithEmailAndPassword,signInWithEmailAndPassword,onAuthStateChanged,signOut,updateProfile } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
+
       const firebaseConfig = {
     apiKey: "AIzaSyDQB8H6NEP5DtZONU4eOUp16CLxVGtk2s4",
     authDomain: "resorts-261f6.firebaseapp.com",
@@ -185,6 +188,8 @@
     messagingSenderId: "630842294118",
     appId: "1:630842294118:web:ed90a4a50d5d64bbef52a7"
   };
+  
+    
       // Initialize Firebase
       const app = initializeApp(firebaseConfig);
       const auth = getAuth();
@@ -194,7 +199,8 @@
       const logoutButton = document.getElementById('logoutButton');
       const loginModalLink = document.getElementById('loginModalLink');
       const adLink = document.getElementById('adLink');
-
+      const mybookings = document.getElementById('mybookings');
+      
       loginBtn.addEventListener('click',()=>{
       const loginBtn = document.getElementById('loginBtn');
       let logoutButton = document.getElementById('logoutButton')
@@ -260,7 +266,7 @@
       const addUserCredentials = async (userCredentials) => {
         try {
           const response = await fetch(
-          "https://resorts-261f6-default-rtdb.firebaseio.com/users.json",{ 
+          "https://resorts-261f6-default-rtdb.firebaseio.com//users.json",{ 
           method: "POST",
           headers: {
           "Content-Type": "application/json",
@@ -304,6 +310,7 @@
     loginModalLink.style.display = 'block';
     logoutButton.style.display = 'none';
     adminLink.style.display = 'none';
+    mybookings.style.display="none"
   }
 });
 

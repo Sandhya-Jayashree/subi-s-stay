@@ -408,6 +408,7 @@
         })
           .then(() => {
             alert("SUCCESSFULLY BOOKED");
+            window.location.reload();
           })
           .catch((error) => {
             alert(error);
@@ -425,6 +426,8 @@
           checkout: checkout.value,
           id: id,
           currentHotelName: currentHotelName,
+          userId: userId,
+          cancelled: false,
         };
         try {
           const response = await fetch(
@@ -444,14 +447,17 @@
       };
       const auth = getAuth();
       const user = auth.currentUser;
+      let userId = "";
 
       onAuthStateChanged(auth, (user) => {
         if (user) {
           const uid = user.uid;
           console.log("USER SIGNEDIN" + uid);
+          userId = user.uid;
           displayName = user.displayName;
           email = user.email;
           console.log(displayName, email, uid);
+          authenticationText.style.display = "none";
         } else {
           // User is signed out
           console.log("USER SIGNEDOUT");

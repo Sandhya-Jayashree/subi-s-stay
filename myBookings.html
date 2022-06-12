@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=1, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css"
+      integrity="sha512-10/jx2EXwxxWqCLX/hHth/vu2KY3jCF70dCQB8TSgNjbCVAC/8vai53GfMDrO2Emgwccf2pJqxct9ehpzG+MTw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://code.jquery.com/jquery-3.6.0.slim.min.js"
+      integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI="
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://code.jquery.com/jquery-3.6.0.slim.min.js"
+      integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI="
+      crossorigin="anonymous"
+    ></script>
+    <link rel="stylesheet" href="./styles/common.css" />
+    <link rel="stylesheet" href="./styles/homePage.css" />
+    <link rel="stylesheet" href="./styles/mybookings.css" />
+    <title>My Bookings</title>
+  </head>
+  <body>
+    <!-- HEADER -->
+    <header class="header">
+      <div class="container">
+        <div class="header-wrapper">
+          <div class="logo">
+            <img src="./assets/images/ssLogo.png" alt="" />
+          </div>
+          <nav class="navbar">
+            <ul class="navbar-list">
+              <li><a href="/">Home</a></li>
+              <li id="adLink" style="display: none">
+                <a href="/admin.html" id="adminLink">Admin Panel</a>
+              </li>
+              <li id="loginModalLink" style="display: none">
+                <a
+                  style="cursor: pointer"
+                  data-bs-toggle="modal"
+                  data-bs-target="#loginModal"
+                  >Login</a
+                >
+              </li>
+              <li>
+                <a style="cursor: pointer" id="logoutButton">Logout</a>
+              </li>
+              <li><a href="./exploreHotels.html">Explore</a></li>
+              <li><a href="./myBookings.html">My Bookings</a></li>
+            </ul>
+            <div class="searchBar"></div>
+            <div class="userProfile"></div>
+          </nav>
+        </div>
+      </div>
+    </header>
+
+    <!-- My Bookings -->
+    <section id="mybookings">
+      <div class="container">
+        <div class="myBookingswrapper">
+          <h2>My bookings</h2>
+          <div class="mybookings-cards" id="mybookings-cards"></div>
+        </div>
+      </div>
+    </section>
+
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-app.js";
+      import {
+        getAuth,
+        createUserWithEmailAndPassword,
+        signInWithEmailAndPassword,
+        onAuthStateChanged,
+        signOut,
+      } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-auth.js";
+      import {
+        getDatabase,
+        ref,
+        set,
+        child,
+        update,
+        remove,
+        get,
+      } from "https://www.gstatic.com/firebasejs/9.6.10/firebase-database.js";
+
+      const firebaseConfig = {
+    apiKey: "AIzaSyDQB8H6NEP5DtZONU4eOUp16CLxVGtk2s4",
+    authDomain: "resorts-261f6.firebaseapp.com",
+    projectId: "resorts-261f6",
+    storageBucket: "resorts-261f6.appspot.com",
+    messagingSenderId: "630842294118",
+    appId: "1:630842294118:web:ed90a4a50d5d64bbef52a7"
+  };
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const db = getDatabase();
+
+      const auth = getAuth();
+      const user = auth.currentUser;
+      let userId = "";
+      let userDisplayName = "";
+      let userDisplayEmail = "";
+
+      const loginModal = document.getElementById("loginModal");
+      const logoutButton = document.getElementById("logoutButton");
+      const loginModalLink = document.getElementById("loginModalLink");
+      const adLink = document.getElementById("adLink");
+
+      let userEmailType;
+      let bookingListUI = "";
+
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          const uid = user.uid;
+          userId = user.uid;
+          console.log("USER SIGNEDIN" + uid);
+          userDisplayName = user.displayName;
+          userDisplayEmail = user.email;
+          console.log(userDisplayName, userDisplayEmail, userId);
+
+          loginModalLink.style.display = "none";
+          logoutButton.style.display = "block";
+          console.log("USER SIGNEDIN");
+          userEmailType = user.providerData[0].uid;
+          if (userEmailType == "admin@gmail.com") {
+            console.log("admin");
+            adLink.style.display = "block";
+          } else {
+            adLink.style.display = "none";
+          }
+
+          fetchUserBookingDetails();
+        } else {
+          // User is signed out
+          console.log("USER SIGNEDOUT");
+          confirmBooking.disabled = true;
+          authenticationText.style.display = "block";
+          // User is signed out
+          loginModalLink.style.display = "block";
+          logoutButton.style.display = "none";
+          adminLink.style.display = "none";
+        }
+      });
+
+      const fetchUserBookingDetails = async () => {
+        const response = await fetch(
+          "https://resorts-261f6-default-rtdb.firebaseio.com/bookingDetails.json"
+        );
+        const data = await response.json();
+
+        const loadUserBookings = [];
+
+        for (const key in data) {
+          loadUserBookings.unshift({
+            id: key,
+            checkin: data[key].checkin,
+            checkout: data[key].checkout,
+            hotelId: data[key].id,
+            userEmail: data[key].userEmail,
+            userMobile: data[key].userMobile,
+            userName: data[key].userName,
+            currentHotelName: data[key].currentHotelName,
+            userId: data[key].userId,
+            cancelled: data[key].cancelled,
+          });
+        }
+
+        console.log(loadUserBookings, userId);
+        const myBookingList = loadUserBookings.filter(
+          (item) => item.userId === userId
+        );
+        console.log("data :" + myBookingList);
+        if (myBookingList != "" && myBookingList != null) {
+          validateCurrentUser(myBookingList);
+        } else {
+          mybookingsCards.innerHTML = "<h5>No Bookings found</h5>";
+        }
+      };
+
+      const mybookingsCards = document.getElementById("mybookings-cards");
+
+      let htmlStr = "";
+      function validateCurrentUser(allBookingDetails) {
+        allBookingDetails.map((item) => {
+          if (!item.cancelled) {
+            console.log("false");
+            bookingListUI += `
+              <div class="mybooking-card">
+                  <div class="myb-card__header">
+                      <div class="dates">
+                          <p>Checkin Date : ${item.checkin}</p>
+                          <p>Checkout Date : ${item.checkout}</p>
+                      </div>
+                      <p>Booking ID :${item.id}</p>
+                  </div>
+                  <div class="myb-card_body">
+                      <h4>${item.currentHotelName}</h4>
+                      <p>${item.userName}</p>
+                  </div>
+                  <div class="myb-card__footer">
+                      <button type="button" class="btn btn-outline-secondary btn-block cancelBtn" data-id="${item.id}" id="cancelBooking-${item.id}" >
+                          Cancel
+                      </button>
+                  </div>
+              </div>
+      `;
+          } else {
+            console.log(true);
+            bookingListUI += `
+              <div class="mybooking-card">
+                  <div class="myb-card__header">
+                      <div class="dates">
+                          <p>Checkin Date : ${item.checkin}</p>
+                          <p>Checkout Date : ${item.checkout}</p>
+                      </div>
+                      <p>Booking ID :${item.id}</p>
+                  </div>
+                  <div class="myb-card_body">
+                      <h4>${item.currentHotelName}</h4>
+                      <p>${item.userName}</p>
+                  </div>
+                  <div class="myb-card__footer">
+
+                    <button type="button" class="btn btn-outline-secondary btn-block cancelBtn" data-id="${item.id}" id="cancelBooking-${item.id}" disabled>
+                          Cancel
+                      </button>
+                  </div>
+              </div>
+      `;
+          }
+        });
+        mybookingsCards.innerHTML = bookingListUI;
+        const cancelBookingBtn = document.querySelectorAll(".cancelBtn");
+
+        let cancelhotelId;
+        for (let c = 0; c < cancelBookingBtn.length; c++) {
+          console.log(cancelBookingBtn);
+          cancelBookingBtn[c].addEventListener("click", () => {
+            cancelhotelId = cancelBookingBtn[c].dataset.id;
+            cancelMyBooking(cancelhotelId);
+            console.log(cancelhotelId);
+          });
+        }
+      }
+
+      function cancelMyBooking(id) {
+        console.log(id);
+        update(ref(db, "bookingDetails/" + id), {
+          cancelled: true,
+        })
+          .then(() => {
+            alert("BOOKING CANCELLED");
+            window.location.reload();
+          })
+          .catch((error) => {
+            alert(error);
+          });
+      }
+    </script>
+  </body>
+</html>

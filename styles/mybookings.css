@@ -1,0 +1,48 @@
+p {
+  margin: 0;
+}
+#mybookings {
+  margin-top: 100px;
+}
+
+.myBookingswrapper h2 {
+  font-size: 2rem;
+  font-weight: 700;
+}
+.mybookings-cards {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: 2rem;
+}
+.mybooking-card {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  padding: 1rem;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+.myb-card__header {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px 0;
+}
+.dates {
+  display: flex;
+  flex-direction: column;
+}
+.myb-card_body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: 12px 0;
+}
+@media (max-width: 767px) {
+  .mybookings-cards {
+    grid-template-columns: repeat(1, 1fr);
+  }
+  #mybookings {
+    margin-top: 30px;
+  }
+}

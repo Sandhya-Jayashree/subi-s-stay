@@ -18,6 +18,9 @@ body {
 #show {
   overflow-x: scroll;
 }
+.loginModal {
+  z-index: 99999999 ; 
+}
 @media (max-width: 767px) {
   .container {
     width: calc(100% - 5%);
