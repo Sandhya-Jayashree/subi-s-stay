@@ -281,7 +281,8 @@ logoutButton.addEventListener('click',()=>{
 function signOutMethod(){
   signOut(auth).then(() => {
   // Sign-out successful.
-  alert("YOU'RE SIGNED OUT")
+  alert("YOU'RE SIGNED OUT");
+  window.location.href = "/"
 }).catch((error) => {
   // An error happened.
   alert(error.message)
