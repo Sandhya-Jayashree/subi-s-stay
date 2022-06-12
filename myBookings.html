@@ -270,6 +270,23 @@
             alert(error);
           });
       }
+
+      //SIGNOUT
+
+logoutButton.addEventListener('click',()=>{
+  signOutMethod();
+})
+
+
+function signOutMethod(){
+  signOut(auth).then(() => {
+  // Sign-out successful.
+  alert("YOU'RE SIGNED OUT")
+}).catch((error) => {
+  // An error happened.
+  alert(error.message)
+});
+}
     </script>
   </body>
 </html>
